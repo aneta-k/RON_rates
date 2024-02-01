@@ -35,16 +35,50 @@ def save_exchange_rate_to_db():
     pass
 
 def menu():
-    result_data = get_latest_ron_exchange_rate()
+    while True:
+        print("\nMenu:\n1. Najnowszy kurs wymiany\n2. Kurs wymiany z danej daty\n3. Wyjście")
+        choice = input("Wybierz opcję (1/2/3): ")
 
-    if result_data:
-        date = result_data.get('date')
-        conversion_rates = result_data.get('conversion_rates')
+        if choice == "1":
+            result_data = get_latest_ron_exchange_rate()
+            if result_data:
+                date = result_data.get('date')
+                conversion_rates = result_data.get('conversion_rates')
 
-        print(f"Date: {date}")
-        print("Conversion Rates:")
-        for currency_code, rate in conversion_rates.items():
-            print(f"{currency_code}: {rate}")
+                print(f"Data: {date}")
+                print("Conversion Rates:")
+                for currency_code, rate in conversion_rates.items():
+                    print(f"{currency_code}: {rate}")
+
+        elif choice == "2":
+            date_str = input("Podaj datę w formacie YYYY-MM-DD (od 1991-01-01 do obecnej daty): ")
+
+            try:
+                input_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                today_date = datetime.now().date()
+
+                if input_date >= datetime(1991, 1, 1).date() and input_date <= today:
+                    result_data = get_historical_ron_exchange_rate()
+                    if result_data:
+                        conversion_rates = result_data.get('conversion_rates')
+
+                        print(f"Data: {date_str}")
+                        print("Conversion Rates:")
+                        for currency_code, rate in conversion_rates.items():
+                            print(f"{currency_code}: {rate}")
+
+                else:
+                    print("Błędna data. Proszę podać datę między 1991-01-01 a obecną datą.")
+
+            except ValueError:
+                print("Błędny format daty. Poprawny format to YYYY-MM-DD.")
+
+        elif choice == "3":
+            break
+
+        else:
+            print("Nieprawidłowy wybór. Wybierz opcję 1, 2 lub 3.")        
+
 
 if __name__ == "__main__":
     menu()
