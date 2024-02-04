@@ -69,11 +69,35 @@ def initialize_database():
     connection.close()
 
 
-def save_exchange_rate_to_db():
+def save_exchange_rate_to_db(result_data):
     connection = sqlite3.connect("ron_currency_rates.db")
     cursor = connection.cursor()
 
+    date = result_data.get("date")
+    conversion_rates = result_data.get("conversion_rates")
 
+    for currency_code, rate in conversion_rates.items():
+        cursor.execute('''
+            SELECT * FROM exchange_rates
+            WHERE date = ? AND currency_code = ?
+        ''', (date, currency_code))
+
+        existing_record = cursor.fetchone()
+
+        if existing_record:
+            cursor.execute('''
+                UPDATE exchange_rates
+                SET rate = ?
+                WHERE date = ? AND currency_code = ?
+            ''', (rate, date, currency_code))
+        else:
+            cursor.execute('''
+                INSERT OR REPLACE INTO exchange_rates (date, currency_code, rate)
+                VALUES (?, ?, ?)
+            ''', (date, currency_code, rate))
+
+    connection.commit()
+    connection.close()
 
 
 def menu():
@@ -84,13 +108,14 @@ def menu():
         if choice == "1":
             result_data = get_latest_ron_exchange_rate()
             if result_data:
-                date = result_data.get("date")
-                conversion_rates = result_data.get("conversion_rates")
+                save_exchange_rate_to_db(result_data)
+                # date = result_data.get("date")
+                # conversion_rates = result_data.get("conversion_rates")
 
-                print(f"Data: {date}")
-                print("Conversion Rates:")
-                for currency_code, rate in conversion_rates.items():
-                    print(f"{currency_code}: {rate}")
+                # print(f"Data: {date}")
+                # print("Conversion Rates:")
+                # for currency_code, rate in conversion_rates.items():
+                #     print(f"{currency_code}: {rate}")
 
         elif choice == "2":
             date_str = input("Podaj datę w formacie YYYY-MM-DD (od 2018-01-01 do obecnej daty): ")
@@ -102,12 +127,13 @@ def menu():
                 if input_date >= datetime(2018, 1, 1).date() and input_date <= today_date:
                     result_data = get_historical_ron_exchange_rate(date_str)
                     if result_data:
-                        conversion_rates = result_data.get("conversion_rates")
+                        save_exchange_rate_to_db(result_data)
+                        # conversion_rates = result_data.get("conversion_rates")
 
-                        print(f"Data: {date_str}")
-                        print("Conversion Rates:")
-                        for currency_code, rate in conversion_rates.items():
-                            print(f"{currency_code}: {rate}")
+                        # print(f"Data: {date_str}")
+                        # print("Conversion Rates:")
+                        # for currency_code, rate in conversion_rates.items():
+                        #     print(f"{currency_code}: {rate}")
 
                 else:
                     print("Błędna data. Proszę podać datę między 2018-01-01 a obecną datą.")
