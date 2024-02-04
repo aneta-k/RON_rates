@@ -7,7 +7,7 @@ Ten program napisany w Pythonie umożliwia pobieranie i aktualizowanie bieżący
 - **Najnowszy Kurs Wymiany:** Pobieranie najnowszego kursu wymiany dla rumuńskiego leja.
 - **Kurs Wymiany Historyczny:** Pobieranie kursów wymiany dla określonej daty (od 2018-01-01 do teraz).
 - **Przechowywanie Danych w Bazie Danych:** Zapisywanie i aktualizowanie danych o kursach wymiany w bazie danych SQLite.
-- **Przyjazne dla Użytkownika Menu:** Interakcja z programem za pomocą prostego menu w konsoli.
+- **Menu dla Użytkownika:** Interakcja z programem za pomocą prostego menu w konsoli.
 
 ### Wymagania
 
