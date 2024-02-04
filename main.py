@@ -9,6 +9,7 @@ EXCHANGE_BASE = "RON"
 
 
 def get_latest_ron_exchange_rate():
+    # Funkcja pobierająca najnowszy kurs wymiany dla RON (Lej rumuński)
     url = f"{API_ENDPOINT}{API_KEY}/latest/{EXCHANGE_BASE}"
 
     response = requests.get(url)
@@ -30,6 +31,7 @@ def get_latest_ron_exchange_rate():
 
 
 def get_historical_ron_exchange_rate(date_str):
+    # Funkcja pobierająca historyczne kursy wymiany dla RON z danej daty 
     year, month, day = map(int, date_str.split("-"))
 
     url = f"{API_ENDPOINT}{API_KEY}/history/{EXCHANGE_BASE}/{year}/{month}/{day}"
@@ -52,6 +54,7 @@ def get_historical_ron_exchange_rate(date_str):
 
 
 def initialize_database():
+    # Inicjalizacja bazy danych, tworzenie tabeli jeśli nie istnieje
     connection = sqlite3.connect("ron_currency_rates.db")
     cursor = connection.cursor()
 
@@ -69,6 +72,7 @@ def initialize_database():
 
 
 def save_exchange_rate_to_db(result_data):
+    # Funkcja zapisująca lub aktualizująca dane o wymianach walut w bazie danych
     try:
         connection = sqlite3.connect("ron_currency_rates.db")
         cursor = connection.cursor()
@@ -77,6 +81,7 @@ def save_exchange_rate_to_db(result_data):
         conversion_rates = result_data.get("conversion_rates")
 
         for currency_code, rate in conversion_rates.items():
+            # Sprawdzenie czy rekord już istnieje
             cursor.execute('''
                 SELECT * FROM exchange_rates
                 WHERE date = ? AND currency_code = ?
@@ -85,12 +90,14 @@ def save_exchange_rate_to_db(result_data):
             existing_record = cursor.fetchone()
 
             if existing_record:
+                # Aktualizacja istniejącego rekordu
                 cursor.execute('''
                     UPDATE exchange_rates
                     SET rate = ?
                     WHERE date = ? AND currency_code = ?
                 ''', (rate, date, currency_code))
             else:
+                # Dodanie nowego rekordu, jeśli nie istnieje
                 cursor.execute('''
                     INSERT OR REPLACE INTO exchange_rates (date, currency_code, rate)
                     VALUES (?, ?, ?)
@@ -105,6 +112,7 @@ def save_exchange_rate_to_db(result_data):
 
 
 def menu():
+    # Głowna pętla menu
     while True:
         print("\nMenu:\n1. Najnowszy kurs wymiany\n2. Kurs wymiany z danej daty\n3. Wyjście")
         choice = input("Wybierz opcję (1/2/3): ")
