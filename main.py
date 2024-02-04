@@ -28,6 +28,7 @@ def get_latest_ron_exchange_rate():
         print(f"Error: {data.get('error', {}).get('info')}")
         return None
 
+
 def get_historical_ron_exchange_rate(date_str):
     year, month, day = map(int, date_str.split("-"))
 
@@ -50,8 +51,30 @@ def get_historical_ron_exchange_rate(date_str):
         print(f"Error: {data.get('error', {}).get('info')}")
         return None
 
+
+def initialize_database():
+    connection = sqlite3.connect("ron_currency_rates.db")
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS exchange_rates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            currency_code TEXT,
+            rate REAL
+        )
+    ''')
+
+    connection.commit()
+    connection.close()
+
+
 def save_exchange_rate_to_db():
-    pass
+    connection = sqlite3.connect("ron_currency_rates.db")
+    cursor = connection.cursor()
+
+
+
 
 def menu():
     while True:
@@ -100,4 +123,5 @@ def menu():
 
 
 if __name__ == "__main__":
+    initialize_database()
     menu()
