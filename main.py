@@ -9,7 +9,7 @@ EXCHANGE_BASE = "RON"
 
 
 def get_latest_ron_exchange_rate():
-    # Funkcja pobierająca najnowszy kurs wymiany dla RON (Lej rumuński)
+    # Function to fetch the latest exchange rate for RON (Romanian Leu)
     url = f"{API_ENDPOINT}{API_KEY}/latest/{EXCHANGE_BASE}"
 
     response = requests.get(url)
@@ -31,7 +31,7 @@ def get_latest_ron_exchange_rate():
 
 
 def get_historical_ron_exchange_rate(date_str):
-    # Funkcja pobierająca historyczne kursy wymiany dla RON z danej daty 
+    # Function to fetch historical exchange rates for RON from a given date
     year, month, day = map(int, date_str.split("-"))
 
     url = f"{API_ENDPOINT}{API_KEY}/history/{EXCHANGE_BASE}/{year}/{month}/{day}"
@@ -54,7 +54,7 @@ def get_historical_ron_exchange_rate(date_str):
 
 
 def initialize_database():
-    # Inicjalizacja bazy danych, tworzenie tabeli jeśli nie istnieje
+    # Initialize the database, create the table if it does not exist
     connection = sqlite3.connect("ron_currency_rates.db")
     cursor = connection.cursor()
 
@@ -72,7 +72,7 @@ def initialize_database():
 
 
 def save_exchange_rate_to_db(result_data):
-    # Funkcja zapisująca lub aktualizująca dane o wymianach walut w bazie danych
+    # Function to save or update currency exchange data in the database
     try:
         connection = sqlite3.connect("ron_currency_rates.db")
         cursor = connection.cursor()
@@ -81,7 +81,7 @@ def save_exchange_rate_to_db(result_data):
         conversion_rates = result_data.get("conversion_rates")
 
         for currency_code, rate in conversion_rates.items():
-            # Sprawdzenie czy rekord już istnieje
+            # Check if the record already exists
             cursor.execute('''
                 SELECT * FROM exchange_rates
                 WHERE date = ? AND currency_code = ?
@@ -90,14 +90,14 @@ def save_exchange_rate_to_db(result_data):
             existing_record = cursor.fetchone()
 
             if existing_record:
-                # Aktualizacja istniejącego rekordu
+                # Update the existing record
                 cursor.execute('''
                     UPDATE exchange_rates
                     SET rate = ?
                     WHERE date = ? AND currency_code = ?
                 ''', (rate, date, currency_code))
             else:
-                # Dodanie nowego rekordu, jeśli nie istnieje
+                # Add a new record if it does not exist
                 cursor.execute('''
                     INSERT OR REPLACE INTO exchange_rates (date, currency_code, rate)
                     VALUES (?, ?, ?)
@@ -112,10 +112,10 @@ def save_exchange_rate_to_db(result_data):
 
 
 def menu():
-    # Głowna pętla menu
+    # Main menu loop
     while True:
-        print("\nMenu:\n1. Najnowszy kurs wymiany\n2. Kurs wymiany z danej daty\n3. Wyjście")
-        choice = input("Wybierz opcję (1/2/3): ")
+        print("\nMenu:\n1. Latest exchange rate\n2. Exchange rate from a specific date\n3. Exit")
+        choice = input("Choose an option (1/2/3): ")
 
         if choice == "1":
             result_data = get_latest_ron_exchange_rate()
@@ -123,7 +123,7 @@ def menu():
                 save_exchange_rate_to_db(result_data)
 
         elif choice == "2":
-            date_str = input("Podaj datę w formacie YYYY-MM-DD (od 2018-01-01 do obecnej daty): ")
+            date_str = input("Enter the date in the format YYYY-MM-DD (from 2018-01-01 to the current date): ")
 
             try:
                 input_date = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -134,16 +134,16 @@ def menu():
                     if result_data:
                         save_exchange_rate_to_db(result_data)
                 else:
-                    print("Błędna data. Proszę podać datę między 2018-01-01 a obecną datą.")
+                    print("Invalid date. Please enter a date between 2018-01-01 and the current date.")
 
             except ValueError:
-                print("Błędny format daty. Poprawny format to YYYY-MM-DD.")
+                print("Invalid date format. The correct format is YYYY-MM-DD.")
 
         elif choice == "3":
             break
 
         else:
-            print("Nieprawidłowy wybór. Wybierz opcję 1, 2 lub 3.")        
+            print("Invalid choice. Choose option 1, 2, or 3.")        
 
 
 if __name__ == "__main__":
