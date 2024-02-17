@@ -1,4 +1,4 @@
-## Currency Exchange Rate Updater
+## Currency Exchange Rate Updater :moneybag:
 
 This Python program enables fetching and updating current and historical exchange rates for the Romanian Leu (RON). The data source is the ExchangeRate-API.
 
