@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 
 API_ENDPOINT = "https://v6.exchangerate-api.com/v6/"
-API_KEY = "5798bdf5beabad95cb858948"
+API_KEY = "YOUR_API_KEY"
 
 EXCHANGE_BASE = "RON"
 

@@ -1,53 +1,55 @@
-## Program Wymiany Walut
+## Currency Exchange Rate Updater
 
-Ten program napisany w Pythonie umożliwia pobieranie i aktualizowanie bieżących oraz archiwalnych kursów wymiany dla rumuńskiego leja (RON). Dane źródłowe pochodzą z API ExchangeRate.
+This Python program enables fetching and updating current and historical exchange rates for the Romanian Leu (RON). The data source is the ExchangeRate-API.
 
-### Funkcje
+### Features
 
-- **Najnowszy Kurs Wymiany:** Pobieranie najnowszego kursu wymiany dla rumuńskiego leja.
-- **Kurs Wymiany Historyczny:** Pobieranie kursów wymiany dla określonej daty (od 2018-01-01 do teraz).
-- **Przechowywanie Danych w Bazie Danych:** Zapisywanie i aktualizowanie danych o kursach wymiany w bazie danych SQLite.
-- **Menu dla Użytkownika:** Interakcja z programem za pomocą prostego menu w konsoli.
+- **Latest Exchange Rate:** Fetching the most recent exchange rate for the Romanian Leu.
+- **Historical Exchange Rate:** Retrieving exchange rates for a specified date (from 2018-01-01 to now).
+- **Data Storage in the Database:** Saving and updating exchange rate data in an SQLite database.
+- **User Menu:** Interacting with the program using a simple console menu.
 
-### Wymagania
+### Requirements
 
 - Python 3.x
-- Wymagane pakiety Pythona: `requests`, `sqlite3`
+- Required Python packages: `requests`, `sqlite3`
+
+### Installation
+
+1. Clone the repository:
+
 ```bash
-pip install requests sqlite3
+git clone https://github.com/aneta-k/RON_rates.git
+cd RON_rates
 ```
 
-### Użycie
+2. Install the required dependencies:
 
-1. Uruchom program:
+```bash
+pip install requests
+```
+
+### Usage
+
+1. Run the program:
 
 ```bash
 python main.py
 ```
 
-2. Postępuj zgodnie z menu ekranowym, aby wybrać żądaną operację:
+2. Follow the on-screen menu to choose options:
 
-- **Opcja 1: Pobierz najnowszy kurs wymiany.**
-- **Opcja 2: Pobierz historyczne kursy wymiany dla określonej daty.**
-- **Opcja 3: Zamknij program.**
+- **Option 1: Fetch and save the latest exchange rate.**
+- **Option 2: Enter a specific date to fetch and save historical exchange rates.**
+- **Option 3: Exit the program.**
 
-### Baza Danych
+### Database
 
-- Program wykorzystuje SQLite do lokalnego przechowywania danych w bazie danych.
-- Baza danych (ron_currency_rates.db) jest automatycznie tworzona i inicjowana przy uruchamianiu programu.
+- The program uses SQLite to store exchange rate data.
+- The database file is named ron_currency_rates.db, and a table named exchange_rates is created to store the data when the program is first ran.
 
-### Struktura Tabeli
+### Notes
 
-```sql
-CREATE TABLE IF NOT EXISTS exchange_rates (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT,
-    currency_code TEXT,
-    rate REAL
-);
-```
-
-### Obsługa Błędów
-
-- Program obejmuje obsługiwanie błędów dla nieprawidłowych wejść użytkownika i błędów API.
-- Szczegółowe komunikaty o błędach są dostarczane, aby prowadzić użytkownika.
+- Make sure to replace the API_KEY variable with your valid ExchangeRate-API key.
+- The program fetches data from [ExchangeRate-API](https://www.exchangerate-api.com/).
+- Historical data is available from January 1, 2018, to the current date.
